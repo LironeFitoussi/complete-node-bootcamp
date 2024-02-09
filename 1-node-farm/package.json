@@ -1,16 +1,19 @@
 {
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "slugify": "^1.6.6"
   },
   "name": "1-node-farm",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "Lirone Fitoussi",
   "license": "ISC",
-  "description": "Learn node.js"
+  "description": "Learn node.js",
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
 }
