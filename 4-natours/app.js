@@ -1,6 +1,18 @@
 import fs from 'fs';
 import express from 'express';
 import morgan from 'morgan';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const filePath = path.resolve(
+  __dirname,
+  'dev-data',
+  'data',
+  'tours-simple.json'
+);
 
 const app = express();
 const port = 3000;
@@ -18,7 +30,7 @@ app.use((req, res, next) => {
 
 const tours = JSON.parse(
   fs.readFileSync(
-    `./dev-data/data/tours-simple.json`
+    `${__dirname}/dev-data/data/tours-simple.json`
   )
 );
 
