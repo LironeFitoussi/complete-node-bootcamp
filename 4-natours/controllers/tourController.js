@@ -1,3 +1,4 @@
+// TODO: Migrate to ES6 EXP/IMP
 const fs = require('fs');
 
 const tours = JSON.parse(
@@ -6,6 +7,7 @@ const tours = JSON.parse(
   )
 );
 
+// Validation middleware
 exports.checkID = (req, res, next, val) => {
   console.log(`Tour ID: ${val}`);
 
@@ -28,6 +30,7 @@ exports.checkBody = (req, res, next) => {
   next();
 };
 
+// Tours Controllers
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
