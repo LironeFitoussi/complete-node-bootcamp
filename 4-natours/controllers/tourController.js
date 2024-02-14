@@ -2,7 +2,6 @@
 const Tour = require('../models/tourModel');
 
 // Tours Controllers
-//? DONE
 exports.getAllTours = async (req, res) => {
   try {
     const tours =  await Tour.find();
@@ -21,7 +20,6 @@ exports.getAllTours = async (req, res) => {
   }
 };
 
-//? DONE
 exports.getTour = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id);
@@ -37,7 +35,6 @@ exports.getTour = async (req, res) => {
   }
 };
 
-//? DONE
 exports.createTour = async  (req, res) => {
   try {
     // const newTour = new Tour({});
@@ -58,7 +55,6 @@ exports.createTour = async  (req, res) => {
   }
 }
 
-//? DONE
 exports.updtaeTour = async (req, res) => {
   try {
     const updatedDoc = await Tour.findByIdAndUpdate(req.params.id, req.body, {
@@ -80,7 +76,6 @@ exports.updtaeTour = async (req, res) => {
   
 };
 
-//! Pending
 exports.deleteTour = async (req, res) => {
   try {
     await Tour.findByIdAndDelete(req.params.id)
