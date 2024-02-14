@@ -6,7 +6,7 @@
       "error",
       {
         "endOfLine": "auto",
-        "singleQuote": false
+        "singleQuote": true
       }
     ],
     "no-console": "off",
