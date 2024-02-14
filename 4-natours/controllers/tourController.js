@@ -1,14 +1,14 @@
 // TODO: Migrate to ES6 EXP/IMP
-const Tour = require('../models/tourModel');
+const Tour = require("../models/tourModel");
 
 // Tours Controllers
 exports.getAllTours = async (req, res) => {
   try {
-    console.log(req.query);
+    // console.log(req.query);
     // BUILD QUERY
     // 1A) Filtering
     const queryObj = { ...req.query };
-    const excludedFileds = ['page', 'sort', 'limit', 'fields'];
+    const excludedFileds = ["page", "sort", "limit", "fields"];
     excludedFileds.forEach((el) => delete queryObj[el]);
 
     // 1B) Advanced filtering
@@ -19,29 +19,38 @@ exports.getAllTours = async (req, res) => {
 
     // 2) Sorting
     if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
+      const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
     } else {
-      query = query.sort('-createdAt');
+      query = query.sort("-createdAt");
     }
 
     // 3) fields Limiting
     if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ');
+      const fields = req.query.fields.split(",").join(" ");
       query = query.select(fields);
     } else {
-      query = query.select('-__v');
+      query = query.select("-__v");
     }
 
     // 4) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
 
-    query = query;
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numOfTours = await Tour.countDocuments();
+      if (skip >= numOfTours) throw new Error("Page Does not exist!");
+    }
     // EXECUTE QUERY
     const tours = await query;
+    // query.sort().select().skip().limit();
 
     // SEND RESPONSE
     res.status(200).json({
-      status: 'success',
+      status: "success",
       results: tours.length,
       data: {
         tours,
@@ -49,7 +58,7 @@ exports.getAllTours = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
-      status: 'fail',
+      status: "fail",
       message: err.message,
     });
   }
@@ -66,13 +75,13 @@ exports.getTour = async (req, res) => {
     const tour = await Tour.findById(req.params.id);
     // tours.findOne({_id: req.params.id});
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         tour,
       },
     });
   } catch (err) {
-    console.log(err.message);
+    // console.log(err.message);
   }
 };
 
@@ -83,14 +92,14 @@ exports.createTour = async (req, res) => {
 
     const newTour = await Tour.create(req.body);
     res.status(201).json({
-      status: 'success',
+      status: "success",
       data: {
         tour: newTour,
       },
     });
   } catch (err) {
     res.status(400).json({
-      status: 'fail',
+      status: "fail",
       message: err.message,
     });
   }
@@ -103,14 +112,14 @@ exports.updtaeTour = async (req, res) => {
       runValidators: true,
     });
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         tour: updatedDoc,
       },
     });
-  } catch (error) {
+  } catch (err) {
     res.status(404).json({
-      status: 'fail',
+      status: "fail",
       message: err.message,
     });
   }
@@ -120,12 +129,12 @@ exports.deleteTour = async (req, res) => {
   try {
     await Tour.findByIdAndDelete(req.params.id);
     res.status(204).json({
-      status: 'success',
+      status: "success",
       data: null,
     });
   } catch (err) {
     res.status(404).json({
-      status: 'fail',
+      status: "fail",
       message: err.message,
     });
   }
