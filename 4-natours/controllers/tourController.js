@@ -21,18 +21,20 @@ exports.getAllTours = async (req, res) => {
   }
 };
 
-// TODO
-exports.getTour = (req, res) => {
-  const id = req.params.id * 1;
-  // const tour = tours.find(
-  //   (tour) => tour.id === id
-  // );
-  // res.status(200).json({
-  //   status: 'success',
-  //   data: {
-  //     tour,
-  //   },
-  // });
+//? DONE
+exports.getTour = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
+    // tours.findOne({_id: req.params.id});
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 //? DONE
