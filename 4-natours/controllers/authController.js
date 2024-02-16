@@ -65,3 +65,33 @@ exports.login = async (req, res, next) => {
     });
   }
 };
+
+exports.protect = async (req, res, next) => {
+  try {
+    // 1) get the token and check if there is one
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      console.log('no token provided');
+      throw new Error('No token provided');
+    }
+
+    // 2) if there is, check if the token is valid
+  } catch (error) {
+    res.status(401).json({
+      status: 'fail',
+      message: error.message,
+    });
+  }
+
+  // 3) if there is a token, check if the user exists
+
+  // 4) if user changes password after login, the token is invalid
+  next();
+};
