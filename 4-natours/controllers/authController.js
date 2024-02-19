@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
@@ -78,19 +79,25 @@ exports.protect = async (req, res, next) => {
     }
 
     if (!token) {
-      console.log('no token provided');
       throw new Error('No token provided');
     }
 
     // 2) if there is, check if the token is valid
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    // 3) if there is a token, check if the user exists
+    const freshUser = await User.findById(decoded.id);
+    if (!freshUser) {
+      throw new Error('User not found');
+    }
+
+    // console.log(decoded);
   } catch (error) {
-    res.status(401).json({
+    return res.status(401).json({
       status: 'fail',
       message: error.message,
     });
   }
-
-  // 3) if there is a token, check if the user exists
 
   // 4) if user changes password after login, the token is invalid
   next();
