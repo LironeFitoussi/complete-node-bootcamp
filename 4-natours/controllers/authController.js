@@ -1,7 +1,8 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 // const express = require('express');
 
 const signToken = (id) => {
@@ -17,6 +18,7 @@ exports.signup = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
+      passwordChangedAt: req.body.passwordChangedAt,
     });
 
     const token = signToken(newUser._id);
@@ -67,38 +69,44 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.protect = async (req, res, next) => {
-  try {
-    // 1) get the token and check if there is one
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-      throw new Error('No token provided');
-    }
-
-    // 2) if there is, check if the token is valid
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // 3) if there is a token, check if the user exists
-    const freshUser = await User.findById(decoded.id);
-    if (!freshUser) {
-      throw new Error('User not found');
-    }
-
-    // console.log(decoded);
-  } catch (error) {
-    return res.status(401).json({
-      status: 'fail',
-      message: error.message,
-    });
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Getting token and check of it's there
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
   }
 
-  // 4) if user changes password after login, the token is invalid
+  console.log(token);
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access', 401),
+    );
+  }
+
+  // 2) Verificing token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3) Check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new AppError('The user belonging to this token no longer exist', 404),
+    );
+  }
+  // 4) Check if user changed password after the token was issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError(
+        'Your password has changed recently. Please log in again',
+        401,
+      ),
+    );
+  }
+
+  // GRANT ACCESS TO PROTECTED ROUTE
+  req.user = currentUser;
   next();
-};
+});
