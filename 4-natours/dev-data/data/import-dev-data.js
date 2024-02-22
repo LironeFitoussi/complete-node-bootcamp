@@ -1,11 +1,11 @@
-const fs = require("fs");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const Tour = require("../../models/tourModel");
+const fs = require('fs');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const Tour = require('../../models/tourModel');
 
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: './config.env' });
 
-const db = process.env.DATABASE.replace("<password>", process.env.PASSWORD);
+const db = process.env.DATABASE.replace('<password>', process.env.PASSWORD);
 mongoose
   .connect(db, {
     useUnifiedTopology: true,
@@ -13,18 +13,18 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(() => console.log("db connection successful"));
+  .then(() => console.log('db connection successful'));
 
 //   REAS JS File
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, "utf8"),
+  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf8'),
 );
 
 // IMPORT DATA TO DB
 const importData = async () => {
   try {
     await Tour.create(tours);
-    console.log("Data Successfully Imported!");
+    console.log('Data Successfully Imported!');
   } catch (err) {
     console.log(err);
   }
@@ -35,15 +35,15 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
-    console.log("Data Successfully Deleted!");
+    console.log('Data Successfully Deleted!');
   } catch (err) {
     console.log(err);
   }
   process.exit();
 };
 
-if (process.argv[2] === "--import") {
+if (process.argv[2] === '--import') {
   importData();
-} else if (process.argv[2] === "--delete") {
+} else if (process.argv[2] === '--delete') {
   deleteData();
 }
