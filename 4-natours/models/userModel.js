@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
     minlength: [8, 'Password must have at least 8 characters'],
     select: false,
   },
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
+  },
   passwordConfirm: {
     type: String,
     required: [true, 'Please confirm your password'],

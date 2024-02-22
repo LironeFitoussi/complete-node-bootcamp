@@ -96,6 +96,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError('The user belonging to this token no longer exist', 404),
     );
   }
+
   // 4) Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
@@ -110,3 +111,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You are not authorized to access this route', 403),
+      );
+    }
+    next();
+  };
+};
