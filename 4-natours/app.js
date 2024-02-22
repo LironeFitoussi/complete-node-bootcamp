@@ -1,7 +1,11 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const hpp = require('hpp');
+const mongoSanitize = require('express-mongo-sanitize');
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -9,23 +13,53 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 
 // 1) Global Middlewares
+
+//! Security HTTP Headers
+app.use(helmet());
+
+//! Limit request from same IP
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  message: 'Too many requests from this IP, please try again later.',
+});
+app.use('/api', limiter);
+
+//! Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-const limiter = rateLimit({
-  max: 5,
-  windowMs: 60 * 60 * 1000, // 1 hour window
-  message: 'Too many requests from this IP, please try again later.',
-});
+//! Body Parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
 
-app.use('/api', limiter);
-app.use(express.json());
+//! Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+//! Data sanitization against XSS attacks
+app.use(xss());
+
+//! Prevent http param pollution
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  }),
+);
+
+//! Serve static files
 app.use(express.static(`${__dirname}/public`));
 
+//! Test Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.headers);
+  // console.log(req.headers);
   next();
 });
 
