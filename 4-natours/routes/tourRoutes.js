@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
@@ -66,6 +67,8 @@ router.route('/:tourId/reviews/');
 
 module.exports = router;
 =======
+=======
+>>>>>>> parent of a418fce (Completed section)
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
@@ -95,4 +98,7 @@ router
   );
 
 module.exports = router;
+<<<<<<< HEAD
+>>>>>>> parent of a418fce (Completed section)
+=======
 >>>>>>> parent of a418fce (Completed section)

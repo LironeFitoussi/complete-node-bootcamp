@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const express = require('express');
 const reviewController = require('./../controllers/reviewController');
 const authController = require('./../controllers/authController');
@@ -27,6 +28,8 @@ router
 
 module.exports = router;
 =======
+=======
+>>>>>>> parent of a418fce (Completed section)
 const express = require('express');
 const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
@@ -43,4 +46,7 @@ router
 router.route('/:id', reviewController.getReviewbyID);
 
 module.exports = router;
+<<<<<<< HEAD
+>>>>>>> parent of a418fce (Completed section)
+=======
 >>>>>>> parent of a418fce (Completed section)
