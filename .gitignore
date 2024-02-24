@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Environment variables
+.env
+config.env
+
+# Dependency directory
+package-lock.json
+
+# Mac OS X
+.DS_Store
+
+# JetBrains IDEs
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# npm debugging logs
+npm-debug.log
+
+# Yarn integrity file
+.yarn-integrity
+
+# OS-generated files
+Thumbs.db
+ehthumbs.db
+
+# Compiled binary addons (like node-sass)
+/build/
+
+# Dependency directory
+node_modules/
+
+# Typescript cache
+*.tsbuildinfo
