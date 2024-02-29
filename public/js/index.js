@@ -2,13 +2,14 @@
 import "@babel/polyfill";
 import { login, logout } from "./login.js";
 import { displayMap } from "./mapbox.js";
-import { updateData } from "./updateSettings.js";
+import { updateSettings } from "./updateSettings.js";
 
 // DOM ELEMENTS
 const mapbox = document.getElementById("map");
 const loginForm = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const userDataForm = document.querySelector(".form-user-data");
+const userPasswordForm = document.querySelector(".form-user-password");
 
 // DELEGATION
 if (mapbox) {
@@ -32,6 +33,28 @@ if (userDataForm) {
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
-    updateData(name, email);
+    updateSettings({ name, email }, "data");
+  });
+}
+
+if (userPasswordForm) {
+  userPasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const saveButton = document.querySelector(".btn--save-password");
+    saveButton.disabled = true;
+    saveButton.textContent = "Updating...";
+    const passwordCurrent = e.target.passwordCurrent.value;
+    const password = e.target.password.value;
+    const passwordConfirm = e.target.passwordConfirm.value;
+    await updateSettings(
+      { passwordCurrent, password, passwordConfirm },
+      "password"
+    );
+    saveButton.textContent = "Password Updated Successfully";
+    setTimeout(() => {
+      saveButton.textContent = "Save Password";
+      saveButton.disabled = false;
+    }, 2000);
+    userPasswordForm.reset();
   });
 }
