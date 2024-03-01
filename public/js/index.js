@@ -31,9 +31,12 @@ if (logOutBtn) logOutBtn.addEventListener("click", logout);
 if (userDataForm) {
   userDataForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = e.target.name.value;
-    const email = e.target.email.value;
-    updateSettings({ name, email }, "data");
+    const form = new FormData();
+    form.append("name", e.target.name.value);
+    form.append("email", e.target.email.value);
+    form.append("photo", e.target.photo.files[0]);
+    console.log(form);
+    updateSettings(form, "data");
   });
 }
 

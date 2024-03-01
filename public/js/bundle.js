@@ -12343,18 +12343,18 @@ if (logOutBtn) logOutBtn.addEventListener("click", _login.logout);
 if (userDataForm) {
   userDataForm.addEventListener("submit", /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
-      var name, email;
+      var form;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
             e.preventDefault();
-            name = e.target.name.value;
-            email = e.target.email.value;
-            (0, _updateSettings.updateSettings)({
-              name: name,
-              email: email
-            }, "data");
-          case 4:
+            form = new FormData();
+            form.append("name", e.target.name.value);
+            form.append("email", e.target.email.value);
+            form.append("photo", e.target.photo.files[0]);
+            console.log(form);
+            (0, _updateSettings.updateSettings)(form, "data");
+          case 7:
           case "end":
             return _context2.stop();
         }
