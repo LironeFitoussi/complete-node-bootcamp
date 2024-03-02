@@ -27,6 +27,9 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(cors());
+
+app.options("*", cors());
+
 // 1) GLOBAL MIDDLEWARES
 // Serving static files:
 app.use(express.static(path.join(__dirname, "public")));
@@ -43,7 +46,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 100,
+  max: 5,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour!",
 });
