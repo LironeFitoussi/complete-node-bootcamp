@@ -6,7 +6,7 @@ const factory = require("./handlerFactory");
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
-  console.log(tour.imageCover);
+  // console.log(tour.imageCover);
   const transformedItems = [
     {
       quantity: 1,

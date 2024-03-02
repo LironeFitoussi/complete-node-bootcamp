@@ -17,7 +17,7 @@ const sharp = require("sharp");
 // });
 
 const multerStorage = multer.memoryStorage();
-console.log(multerStorage);
+// console.log(multerStorage);
 
 const multerFliter = (req, file, cb) => {
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
