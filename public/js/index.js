@@ -1,71 +1,71 @@
 /* eslint-disable */
 import "@babel/polyfill";
-import { login, logout } from "./login.js";
-import { displayMap } from "./mapbox.js";
-import { updateSettings } from "./updateSettings.js";
-import { bookTour } from "./stripe.js";
+import { displayMap } from "./mapbox";
+import { login, logout } from "./login";
+import { updateSettings } from "./updateSettings";
+import { bookTour } from "./stripe";
+import { showAlert } from "./alerts";
+
 // DOM ELEMENTS
-const mapbox = document.getElementById("map");
+const mapBox = document.getElementById("map");
 const loginForm = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const userDataForm = document.querySelector(".form-user-data");
 const userPasswordForm = document.querySelector(".form-user-password");
-const bookBtn = document.querySelector("#book-tour");
+const bookBtn = document.getElementById("book-tour");
+
 // DELEGATION
-if (mapbox) {
-  const locations = JSON.parse(mapbox.dataset.locations);
+if (mapBox) {
+  const locations = JSON.parse(mapBox.dataset.locations);
   displayMap(locations);
 }
 
-if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
+if (loginForm)
+  loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
     login(email, password);
   });
-}
 
 if (logOutBtn) logOutBtn.addEventListener("click", logout);
 
-if (userDataForm) {
-  userDataForm.addEventListener("submit", async (e) => {
+if (userDataForm)
+  userDataForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append("name", e.target.name.value);
-    form.append("email", e.target.email.value);
-    form.append("photo", e.target.photo.files[0]);
-    // console.log(form);
+    form.append("name", document.getElementById("name").value);
+    form.append("email", document.getElementById("email").value);
+    form.append("photo", document.getElementById("photo").files[0]);
+
     updateSettings(form, "data");
   });
-}
 
-if (userPasswordForm) {
+if (userPasswordForm)
   userPasswordForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const saveButton = document.querySelector(".btn--save-password");
-    saveButton.disabled = true;
-    saveButton.textContent = "Updating...";
-    const passwordCurrent = e.target.passwordCurrent.value;
-    const password = e.target.password.value;
-    const passwordConfirm = e.target.passwordConfirm.value;
+    document.querySelector(".btn--save-password").textContent = "Updating...";
+
+    const passwordCurrent = document.getElementById("password-current").value;
+    const password = document.getElementById("password").value;
+    const passwordConfirm = document.getElementById("password-confirm").value;
     await updateSettings(
       { passwordCurrent, password, passwordConfirm },
       "password"
     );
-    saveButton.textContent = "Password Updated Successfully";
-    setTimeout(() => {
-      saveButton.textContent = "Save Password";
-      saveButton.disabled = false;
-    }, 2000);
-    userPasswordForm.reset();
-  });
-}
 
-if (bookBtn) {
+    document.querySelector(".btn--save-password").textContent = "Save password";
+    document.getElementById("password-current").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("password-confirm").value = "";
+  });
+
+if (bookBtn)
   bookBtn.addEventListener("click", (e) => {
     e.target.textContent = "Processing...";
     const { tourId } = e.target.dataset;
     bookTour(tourId);
   });
-}
+
+const alertMessage = document.querySelector("body").dataset.alert;
+if (alertMessage) showAlert("success", alertMessage, 20);
